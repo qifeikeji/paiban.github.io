@@ -675,6 +675,7 @@
             }
         }
 
+
         async function shareAllContainers() {
             const isPreviewMode = document.body.classList.contains('preview-mode');
             if (!isPreviewMode) {
@@ -686,15 +687,19 @@
             
             for (const container of containers) {
                 const clone = container.cloneNode(true);
+                // 移除控制按钮和不需要的元素
                 clone.querySelectorAll('.container-controls, .add-buttons, .text-buttons, .image-area-buttons, .add-image-button, .delete-image-button').forEach(el => el.remove());
                 
-                // Set container background color
+                // 新增：移除图片上传的 <input type="file" accept="image/*" class="hidden">
+                clone.querySelectorAll('input[type="file"][accept="image/*"].hidden').forEach(input => input.remove());
+                
+                // 设置容器背景色
                 const bgColor = container.hasAttribute('data-no-background') && container.getAttribute('data-no-background') === 'true'
                     ? 'transparent'
                     : getComputedStyle(container).backgroundColor;
                 clone.style.backgroundColor = bgColor;
                 
-                // Convert textareas to divs
+                // 转换 textareas 为 divs
                 clone.querySelectorAll('.text-area').forEach(textarea => {
                     const div = document.createElement('div');
                     div.className = 'text-area';
@@ -702,7 +707,7 @@
                     textarea.replaceWith(div);
                 });
                 
-                // Convert images to base64
+                // 转换图片为 base64
                 const images = clone.querySelectorAll('.inserted-image');
                 for (const img of images) {
                     if (img.src) {
@@ -710,7 +715,7 @@
                     }
                 }
                 
-                // Handle heading backgrounds and blur
+                // 处理标题背景和模糊效果
                 const headings = clone.querySelectorAll('.heading-30px');
                 for (const heading of headings) {
                     const bgImage = heading.style.backgroundImage;
@@ -730,7 +735,7 @@
                             }
                         }
                     }
-                    // Apply current text color, border, and blur styles
+                    // 应用当前文本颜色、边框和模糊样式
                     const currentColor = getComputedStyle(document.querySelector('.heading-30px')).color;
                     heading.style.color = currentColor;
                     heading.style.border = isHeadingBorderOn ? `2px solid ${currentColor}` : 'none';
@@ -743,6 +748,7 @@
             if (!isPreviewMode) {
                 document.body.classList.remove('preview-mode');
             }
+
 
             const styles = `
                 <style>
@@ -920,10 +926,10 @@
                     </div>
                 </body>
                 </html>
-            `;
+            `;        
 
             const blob = new Blob([htmlContent], { type: 'text/html' });
-            const file = new File([blob], `article-${Date.now()}.html`, { type: 'text/html' });
+            const file = new File([blob], `article-${Date.now()}.html`, { type: 'text/html' });        
 
             if (navigator.share) {
                 navigator.share({
