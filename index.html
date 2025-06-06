@@ -6,6 +6,11 @@
     <title>WeChat Article Editor</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zhi+Mang+Xing&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Liu+Jian+Mao+Cao&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=ZCOOL+XiaoWei&display=swap">
     <style>
         * {
             box-sizing: border-box;
@@ -15,6 +20,8 @@
             margin: 0;
             padding: 0;
             width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
         }
         :root {
             --spacing-large: 10px;
@@ -25,77 +32,359 @@
             --heading-15px-padding: var(--spacing-small);
             --text-area-font-size: 16px;
             --text-area-alignment: left;
-            --heading-30px-font: SimSun, Arial, sans-serif;
+            --text-area-offset: 0px;
+            --heading-30px-font: 'Noto Serif SC', serif;
             --bg-pale-yellow: #ffeaab;
             --bg-pale-pink: #ffe6e6;
             --bg-pale-blue: #e6f3ff;
             --bg-pale-green: #e6ffe6;
             --bg-pale-gray: #f0f0f0;
+            --bg-white: #ffffff;
+            --bg-gray1: #f5f5f5;
+            --bg-gray2: #e0e0e0;
+            --bg-light-blue: #e3f2fd;
+            --bg-light-yellow: #fff9c4;
             --text-yellow: #ffeb3b;
             --text-black: #000000;
             --text-white: #ffffff;
             --text-blue: #2196f3;
             --text-red: #f44336;
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --accent-color: #4CAF50;
+            --glass-bg: rgba(255, 255, 255, 0.25);
+            --glass-border: rgba(255, 255, 255, 0.18);
         }
+        
         body {
-            font-family: SimSun, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif;
             max-width: 375px;
-            margin: var(--spacing-large) auto;
-            padding: 0 var(--spacing-medium);
+            margin: 0 auto;
+            padding: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
             touch-action: manipulation;
         }
-        .top-controls {
-            display: flex;
-            gap: var(--spacing-small);
-            margin-bottom: var(--spacing-medium);
+
+        /* 顶部固定容器 */
+        .header-container {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            width: 100%;
+            max-width: 375px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+            border-radius: 0 0 20px 20px;
+            padding: 20px 15px 15px 15px;
+            margin-bottom: 20px;
         }
-        .control-label {
-            font-size: 12px;
+
+        /* 标题 */
+        .app-title {
             text-align: center;
-            margin-bottom: var(--spacing-medium);
             color: #333;
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 10px rgba(255, 255, 255, 0.8);
+            letter-spacing: 1px;
         }
-        .preview-button, .share-button, .text-size-button, .text-align-button, .font-button, .add-container-button {
-            padding: var(--spacing-small) var(--spacing-medium);
-            background-color: #3498db;
+
+        /* 主要操作按钮组 */
+        .main-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 20px;
+            padding: 0 8px;
+        }
+
+        .main-action-btn {
+            padding: 12px 8px;
+            background: linear-gradient(45deg, var(--accent-color), #66bb6a);
             color: white;
             border: none;
-            border-radius: var(--spacing-small);
-            font-size: 14px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
             cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+            position: relative;
+            overflow: hidden;
+            text-align: center;
         }
-        .preview-button:hover, .share-button:hover, .text-size-button:hover, .text-align-button:hover, .font-button:hover, .add-container-button:hover {
-            background-color: #2980b9;
+
+        .main-action-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
         }
-        .container-bg-controls, .heading-color-controls, .text-controls, .font-controls {
+
+        .main-action-btn:hover::before {
+            left: 100%;
+        }
+
+        .main-action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+        }
+
+        .main-action-btn:active {
+            transform: translateY(0);
+        }
+
+        /* 次要操作按钮组 */
+        .secondary-actions {
             display: flex;
-            gap: var(--spacing-small);
-            margin-bottom: var(--spacing-medium);
+            gap: 8px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .secondary-action-btn {
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .secondary-action-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-1px);
+        }
+
+        /* 控制区域标题 */
+        .control-section-title {
+            font-size: 13px;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 12px;
+            color: #333;
+            text-shadow: 0 1px 3px rgba(255, 255, 255, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.3s ease;
+        }
+        
+        .control-section-title:hover {
+            color: #000;
+        }
+        
+        .dropdown-arrow {
+            font-size: 12px;
+            transition: transform 0.3s ease;
+            color: #666;
+        }
+        
+        .dropdown-arrow.collapsed {
+            transform: rotate(-90deg);
+        }
+        
+        .collapsible-section {
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            max-height: 500px;
+            opacity: 1;
+        }
+        
+        .collapsible-section.collapsed {
+            max-height: 0;
+            margin-bottom: 0;
+            opacity: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+
+        /* 颜色选择器容器 */
+        .color-controls {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
             justify-content: center;
             flex-wrap: wrap;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 12px;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
-        .bg-color-button, .text-color-button {
-            width: 24px;
-            height: 24px;
-            border: none;
-            border-radius: var(--spacing-small);
+
+        .color-btn {
+            width: 32px;
+            height: 32px;
+            border: 2px solid rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
             cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
         }
-        .border-toggle-button, .blur-toggle-button {
-            padding: var(--spacing-small) var(--spacing-medium);
-            background-color: #666;
-            color: white;
-            border: none;
-            border-radius: var(--spacing-small);
+
+        .color-btn::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 6px;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .color-btn:hover {
+            transform: scale(1.1);
+            border-color: rgba(0, 0, 0, 0.4);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        /* 为不同颜色按钮添加半透明带色彩的背景 */
+        .color-btn.bg-yellow {
+            background: rgba(255, 234, 171, 0.8) !important;
+            backdrop-filter: blur(10px);
+        }
+        
+        .color-btn.bg-pink {
+            background: rgba(255, 230, 230, 0.8) !important;
+            backdrop-filter: blur(10px);
+        }
+        
+        .color-btn.bg-blue {
+            background: rgba(230, 243, 255, 0.8) !important;
+            backdrop-filter: blur(10px);
+        }
+        
+        .color-btn.bg-green {
+            background: rgba(230, 255, 230, 0.8) !important;
+            backdrop-filter: blur(10px);
+        }
+        
+        .color-btn.bg-gray {
+            background: rgba(240, 240, 240, 0.8) !important;
+            backdrop-filter: blur(10px);
+        }
+        
+        .color-btn.text-yellow {
+            background: rgba(255, 235, 59, 0.8) !important;
+            backdrop-filter: blur(10px);
+        }
+        
+        .color-btn.text-black {
+            background: rgba(60, 60, 60, 0.8) !important;
+            backdrop-filter: blur(10px);
+        }
+        
+        .color-btn.text-white {
+            background: rgba(255, 255, 255, 0.8) !important;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(0, 0, 0, 0.3) !important;
+        }
+        
+        .color-btn.text-blue {
+            background: rgba(33, 150, 243, 0.8) !important;
+            backdrop-filter: blur(10px);
+        }
+        
+        .color-btn.text-red {
+            background: rgba(244, 67, 54, 0.8) !important;
+            backdrop-filter: blur(10px);
+        }
+        
+        .color-btn.bg-white {
+            background: rgba(255, 255, 255, 0.8) !important;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(0, 0, 0, 0.3) !important;
+        }
+        
+        .color-btn.bg-gray1 {
+            background: rgba(245, 245, 245, 0.8) !important;
+            backdrop-filter: blur(10px);
+        }
+        
+        .color-btn.bg-gray2 {
+            background: rgba(224, 224, 224, 0.8) !important;
+            backdrop-filter: blur(10px);
+        }
+        
+        .color-btn.bg-light-blue {
+            background: rgba(227, 242, 253, 0.8) !important;
+            backdrop-filter: blur(10px);
+        }
+        
+        .color-btn.bg-light-yellow {
+            background: rgba(255, 249, 196, 0.8) !important;
+            backdrop-filter: blur(10px);
+        }
+
+        /* 工具按钮 */
+        .tool-controls {
+            display: flex;
+            gap: 6px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 12px;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .tool-btn {
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.8);
+            color: #333;
+            border: 1px solid rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
             font-size: 12px;
+            font-weight: 500;
             cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            min-width: 60px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
-        .border-toggle-button:hover, .blur-toggle-button:hover {
-            background-color: #555;
+
+        .tool-btn:hover {
+            background: rgba(255, 255, 255, 0.9);
+            border-color: rgba(0, 0, 0, 0.3);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
         }
+
+        .tool-btn.active {
+            background: rgba(76, 175, 80, 0.8);
+            border-color: var(--accent-color);
+            color: white;
+        }
+
+        /* 内容区域 */
+        .content-wrapper {
+            width: 100%;
+            max-width: 375px;
+            padding: 0 15px 20px 15px;
+        }
+
         .content-container {
             width: 100%;
             display: flex;
@@ -104,12 +393,16 @@
         }
         .container-unit {
             width: 100%;
-            border: 1px solid #ccc;
+            border: 1px solid rgba(255, 255, 255, 0.2);
             padding: var(--spacing-medium);
             margin-bottom: var(--spacing-large);
             position: relative;
-            background-color: var(--bg-pale-yellow);
-            border-radius: 10px;
+            background: rgba(255, 234, 171, 0.3);
+            backdrop-filter: blur(15px);
+            border-radius: 16px;
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
         }
         .module-container {
             width: 100%;
@@ -125,7 +418,7 @@
         .text-area {
             width: 100%;
             min-height: 100px;
-            padding: var(--spacing-medium);
+            padding: var(--spacing-medium) 12px;
             border: 1px solid #ccc;
             box-sizing: border-box;
             resize: vertical;
@@ -141,28 +434,50 @@
             border: 1px solid #ccc;
             padding: var(--spacing-medium);
             box-sizing: border-box;
-            font-family: SimSun, Arial, sans-serif;
+            font-family: var(--heading-30px-font) !important;
             position: relative;
         }
         .heading-30px {
             font-size: 30px;
             color: var(--text-red);
             padding: var(--spacing-medium) 0;
-            font-family: var(--heading-30px-font);
             background-size: cover;
             background-position: center;
+            position: relative;
+            z-index: 1;
         }
         .heading-30px-blur {
             position: absolute;
-            top: -10px;
-            left: -10px;
-            right: -10px;
-            bottom: -10px;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
             background-size: cover;
             background-position: center;
-            filter: blur(13px);
+            filter: blur(25px);
             overflow: hidden;
             z-index: -1;
+            border-radius: 10px;
+            transform: scale(1.1);
+        }
+        
+        .heading-blur-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            filter: blur(8px);
+            overflow: hidden;
+            z-index: 0;
+            border-radius: 10px;
+            pointer-events: none;
         }
         .heading-20px {
             font-size: 20px;
@@ -171,16 +486,26 @@
             font-size: 15px;
         }
         .image-area {
-            border: 1px solid #ccc;
-            padding: var(--spacing-small);
+            border: none;
+            padding: 0;
             box-sizing: border-box;
             min-height: 50px;
+            background: transparent;
+            border-radius: 0;
+            backdrop-filter: none;
+            position: relative;
+        }
+        
+        .image-area:hover {
+            border: none;
+            background: transparent;
         }
         .image-grid {
             margin-bottom: var(--spacing-small);
         }
         .image-grid.single {
             display: block;
+            padding: 5px;
         }
         .image-grid.two {
             display: flex;
@@ -191,78 +516,210 @@
             column-count: 2;
             column-gap: var(--spacing-small);
             column-width: calc((100% - var(--spacing-small)) / 2);
+            padding: 5px;
         }
         .image-container {
             position: relative;
             width: 100%;
             margin-bottom: var(--spacing-small);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: all 0.3s ease;
         }
+        
         .image-grid.two .image-container {
             flex: 1;
         }
+        
+        .image-container:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        
         .inserted-image {
             width: 100%;
             height: auto;
             display: block;
-            border-radius: 5px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .image-container:hover .inserted-image {
+            transform: scale(1.02);
         }
         .delete-image-button {
             position: absolute;
-            bottom: var(--spacing-small);
-            left: var(--spacing-small);
-            padding: var(--spacing-small) var(--spacing-medium);
-            background-color: #e74c3c;
+            bottom: 8px;
+            right: 8px;
+            padding: 6px 10px;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
             color: white;
             border: none;
-            border-radius: 3px;
-            font-size: 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
             cursor: pointer;
+            box-shadow: 
+                0 3px 10px rgba(238, 90, 82, 0.3),
+                0 1px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
         .delete-image-button:hover {
-            background-color: #c0392b;
+            transform: translateY(-2px);
+            box-shadow: 
+                0 5px 15px rgba(238, 90, 82, 0.4),
+                0 2px 6px rgba(0, 0, 0, 0.15);
+            background: linear-gradient(135deg, #ff5252, #e53935);
+        }
+        .delete-image-button:active {
+            transform: translateY(0);
         }
         .add-image-button {
             position: absolute;
-            top: var(--spacing-small);
-            left: var(--spacing-small);
-            width: 40px;
-            height: 40px;
-            background-color: #4CAF50;
+            top: 5px;
+            left: 5px;
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, #4CAF50, #45a049);
             color: white;
             border: none;
             border-radius: 50%;
-            font-size: 24px;
+            font-size: 20px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
+            box-shadow: 
+                0 4px 12px rgba(76, 175, 80, 0.3),
+                0 2px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
         }
         .add-image-button:hover {
-            background-color: #45a049;
+            transform: scale(1.1) rotate(90deg);
+            box-shadow: 
+                0 6px 20px rgba(76, 175, 80, 0.4),
+                0 3px 10px rgba(0, 0, 0, 0.15);
+            background: linear-gradient(135deg, #66bb6a, #4CAF50);
+        }
+        .add-image-button:active {
+            transform: scale(1.05) rotate(90deg);
         }
         .add-buttons {
-            display: flex;
-            flex-wrap: nowrap;
-            gap: var(--spacing-small);
-            justify-content: center;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(48px, 1fr));
+            gap: 8px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
             width: 100%;
             max-width: 375px;
+            margin: 10px 0;
         }
         .add-button {
-            padding: var(--spacing-small) var(--spacing-small);
-            background-color: #4CAF50;
-            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 6px 4px;
+            background: linear-gradient(145deg, #ffffff, #f0f0f0);
+            color: #333;
             border: none;
-            border-radius: var(--spacing-small);
-            font-size: 10px;
+            border-radius: 12px;
+            font-size: 8px;
+            font-weight: 600;
             cursor: pointer;
-            flex: 1;
-            text-align: center;
-            white-space: nowrap;
-            min-width: 40px;
+            min-height: 48px;
+            min-width: 48px;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            box-shadow: 
+                0 2px 4px rgba(0, 0, 0, 0.1),
+                0 1px 2px rgba(0, 0, 0, 0.08),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+            position: relative;
+            overflow: hidden;
         }
+        
+        .add-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(145deg, transparent, rgba(255, 255, 255, 0.1));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .add-button:hover::before {
+            opacity: 1;
+        }
+        
         .add-button:hover {
-            background-color: #45a049;
+            transform: translateY(-1px) scale(1.02);
+            box-shadow: 
+                0 4px 12px rgba(0, 0, 0, 0.15),
+                0 2px 4px rgba(0, 0, 0, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.9);
+        }
+        
+        .add-button:active {
+            transform: translateY(0) scale(0.98);
+            box-shadow: 
+                0 1px 4px rgba(0, 0, 0, 0.15),
+                0 1px 2px rgba(0, 0, 0, 0.1),
+                inset 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+        
+        .add-button .label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #333;
+            text-shadow: 0 1px 1px rgba(255, 255, 255, 0.8);
+            line-height: 1;
+        }
+        
+        /* 为不同类型的按钮设置不同的渐变色 */
+        .add-button.text-btn {
+            background: linear-gradient(145deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .add-button.image-btn {
+            background: linear-gradient(145deg, #f093fb, #f5576c);
+            color: white;
+        }
+        
+        .add-button.heading-btn {
+            background: linear-gradient(145deg, #4facfe, #00f2fe);
+            color: white;
+        }
+        
+        .add-button.line-btn {
+            background: linear-gradient(145deg, #43e97b, #38f9d7);
+            color: white;
+        }
+        
+        .add-button.spacer-btn {
+            background: linear-gradient(145deg, #fa709a, #fee140);
+            color: white;
+        }
+        
+        .add-button.text-btn .label,
+        .add-button.image-btn .label,
+        .add-button.heading-btn .label,
+        .add-button.line-btn .label,
+        .add-button.spacer-btn .label {
+            color: rgba(255, 255, 255, 0.95);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+            font-weight: 600;
         }
         .hidden {
             display: none;
@@ -273,6 +730,7 @@
             right: var(--spacing-small);
             display: flex;
             gap: var(--spacing-small);
+            z-index: 10;
         }
         .container-controls {
             display: flex;
@@ -372,57 +830,126 @@
     </style>
 </head>
 <body>
-    <div class="top-controls">
-        <button class="preview-button" onclick="togglePreviewMode()">预览模式</button>
-        <button class="share-button" onclick="shareAllContainers()">分享到微信</button>
-        <button class="add-container-button" onclick="addContainer()">添加容器</button>
-        <button class="add-container-button" onclick="addContainerWithoutBackground()">添加容器(无背景)</button>
-    </div>
-    <div class="control-label">文本背景色</div>
-    <div class="container-bg-controls">
-        <button class="bg-color-button" style="background-color: var(--bg-pale-yellow);" onclick="setContainerBackground('var(--bg-pale-yellow)')"></button>
-        <button class="bg-color-button" style="background-color: var(--bg-pale-pink);" onclick="setContainerBackground('var(--bg-pale-pink)')"></button>
-        <button class="bg-color-button" style="background-color: var(--bg-pale-blue);" onclick="setContainerBackground('var(--bg-pale-blue)')"></button>
-        <button class="bg-color-button" style="background-color: var(--bg-pale-green);" onclick="setContainerBackground('var(--bg-pale-green)')"></button>
-        <button class="bg-color-button" style="background-color: var(--bg-pale-gray);" onclick="setContainerBackground('var(--bg-pale-gray)')"></button>
-    </div>
-    <div class="control-label">标题色</div>
-    <div class="heading-color-controls">
-        <button class="text-color-button" style="background-color: var(--text-yellow);" onclick="setHeadingTextColor('var(--text-yellow)')"></button>
-        <button class="text-color-button" style="background-color: var(--text-black);" onclick="setHeadingTextColor('var(--text-black)')"></button>
-        <button class="text-color-button" style="background-color: var(--text-white);" onclick="setHeadingTextColor('var(--text-white)')"></button>
-        <button class="text-color-button" style="background-color: var(--text-blue);" onclick="setHeadingTextColor('var(--text-blue)')"></button>
-        <button class="text-color-button" style="background-color: var(--text-red);" onclick="setHeadingTextColor('var(--text-red)')"></button>
-        <button class="border-toggle-button" onclick="toggleHeadingBorder()">边框开</button>
-        <button class="blur-toggle-button" onclick="toggleHeadingBlur()">阴影开</button>
-    </div>
-    <div class="control-label">文本设置</div>
-    <div class="text-controls">
-        <button class="text-size-button" onclick="adjustTextSize(2)">A+</button>
-        <button class="text-size-button" onclick="adjustTextSize(-2)">A-</button>
-        <button class="text-align-button" onclick="setTextAlignment('left')">左对齐</button>
-        <button class="text-align-button" onclick="setTextAlignment('center')">中对齐</button>
-    </div>
-    <div class="control-label">标题字体</div>
-    <div class="font-controls">
-        <button class="font-button" onclick="setHeadingFont('Noto Serif SC, serif')">楷体</button>
-        <button class="font-button" onclick="setHeadingFont('Noto Sans SC, sans-serif')">圆体</button>
-        <button class="font-button" onclick="setHeadingFont('Noto Serif SC, serif')">仿宋</button>
-        <button class="font-button" onclick="setHeadingFont('Noto Sans SC, sans-serif')">黑体</button>
-        <button class="font-button" onclick="setHeadingFont('Noto Serif SC, serif')">宋体</button>
-    </div>
-    <div id="content" class="content-container">
-        <div class="container-unit" id="initial-heading-container">
-            <div class="container-controls">
-                <button class="delete-container-button" onclick="this.closest('.container-unit').remove()">删除容器</button>
-                <button class="change-bg-button" onclick="changeContainerBackground(this.closest('.container-unit'))">更改背景</button>
+    <!-- 美化的顶部容器 -->
+    <div class="header-container">
+        <div class="app-title">📝 微信文章编辑器</div>
+        
+        <!-- 主要操作 -->
+        <div class="main-actions">
+            <button class="main-action-btn" onclick="togglePreviewMode()">
+                <span id="preview-text">预览模式</span>
+            </button>
+            <button class="main-action-btn" onclick="shareAllContainers()">
+                分享到微信
+            </button>
+            <button class="main-action-btn" onclick="addContainer()">
+                添加容器
+            </button>
+            <button class="main-action-btn" onclick="addContainerWithoutBackground()">
+                无背景容器
+            </button>
+        </div>
+
+        <!-- 文本背景色 -->
+        <div class="control-section-title" onclick="toggleSection('bg-colors')">
+            🎨 文本背景色
+            <span class="dropdown-arrow">▼</span>
+        </div>
+        <div class="collapsible-section" id="bg-colors">
+            <div class="color-controls">
+                <button class="color-btn bg-yellow" style="background-color: var(--bg-pale-yellow);" onclick="setContainerBackground('var(--bg-pale-yellow)')"></button>
+                <button class="color-btn bg-pink" style="background-color: var(--bg-pale-pink);" onclick="setContainerBackground('var(--bg-pale-pink)')"></button>
+                <button class="color-btn bg-blue" style="background-color: var(--bg-pale-blue);" onclick="setContainerBackground('var(--bg-pale-blue)')"></button>
+                <button class="color-btn bg-green" style="background-color: var(--bg-pale-green);" onclick="setContainerBackground('var(--bg-pale-green)')"></button>
+                <button class="color-btn bg-gray" style="background-color: var(--bg-pale-gray);" onclick="setContainerBackground('var(--bg-pale-gray)')"></button>
             </div>
-            <div class="module-container module-unit">
-                <div class="heading-container">
-                    <div class="heading-30px" contenteditable="true">输入标题</div>
+        </div>
+
+        <!-- 标题设置 -->
+        <div class="control-section-title" onclick="toggleSection('heading-settings')">
+            ✨ 标题设置
+            <span class="dropdown-arrow">▼</span>
+        </div>
+        <div class="collapsible-section" id="heading-settings">
+            <div class="color-controls">
+                <button class="color-btn text-yellow" style="background-color: var(--text-yellow);" onclick="setHeadingTextColor('var(--text-yellow)')"></button>
+                <button class="color-btn text-black" style="background-color: var(--text-black);" onclick="setHeadingTextColor('var(--text-black)')"></button>
+                <button class="color-btn text-white" style="background-color: var(--text-white);" onclick="setHeadingTextColor('var(--text-white)')"></button>
+                <button class="color-btn text-blue" style="background-color: var(--text-blue);" onclick="setHeadingTextColor('var(--text-blue)')"></button>
+                <button class="color-btn text-red" style="background-color: var(--text-red);" onclick="setHeadingTextColor('var(--text-red)')"></button>
+            </div>
+            <div class="tool-controls">
+                <button class="tool-btn" id="border-btn" onclick="toggleHeadingBorder()">边框开</button>
+                <button class="tool-btn" id="blur-btn" onclick="toggleHeadingBlur()">阴影开</button>
+                <button class="tool-btn" id="bg-blur-btn" onclick="toggleBackgroundBlur()">图片模糊开</button>
+                <button class="tool-btn" onclick="toggleHeadingExpand()">标题加宽</button>
+            </div>
+        </div>
+
+        <!-- 整体背景色 -->
+        <div class="control-section-title" onclick="toggleSection('gradient-backgrounds')">
+            🎨 整体背景色
+            <span class="dropdown-arrow collapsed">▼</span>
+        </div>
+        <div class="collapsible-section collapsed" id="gradient-backgrounds">
+            <div class="color-controls">
+                <button class="color-btn bg-white" style="background-color: var(--bg-white);" onclick="setGradientBackground('white')"></button>
+                <button class="color-btn bg-gray1" style="background-color: var(--bg-gray1);" onclick="setGradientBackground('gray1')"></button>
+                <button class="color-btn bg-gray2" style="background-color: var(--bg-gray2);" onclick="setGradientBackground('gray2')"></button>
+                <button class="color-btn bg-light-blue" style="background-color: var(--bg-light-blue);" onclick="setGradientBackground('light-blue')"></button>
+                <button class="color-btn bg-light-yellow" style="background-color: var(--bg-light-yellow);" onclick="setGradientBackground('light-yellow')"></button>
+            </div>
+        </div>
+
+        <!-- 文本设置 -->
+        <div class="control-section-title" onclick="toggleSection('text-settings')">
+            📝 文本设置
+            <span class="dropdown-arrow">▼</span>
+        </div>
+        <div class="collapsible-section" id="text-settings">
+            <div class="tool-controls">
+                <button class="tool-btn" onclick="adjustTextSize(2)">A+</button>
+                <button class="tool-btn" onclick="adjustTextSize(-2)">A-</button>
+                <button class="tool-btn" onclick="adjustTextOffset(-2)">左偏移</button>
+                <button class="tool-btn" onclick="adjustTextOffset(2)">右偏移</button>
+                <button class="tool-btn" onclick="setTextAlignment('left')">左对齐</button>
+                <button class="tool-btn" onclick="setTextAlignment('center')">中对齐</button>
+            </div>
+        </div>
+
+        <!-- 标题字体 -->
+        <div class="control-section-title" onclick="toggleSection('font-settings')">
+            🖋️ 标题字体
+            <span class="dropdown-arrow collapsed">▼</span>
+        </div>
+        <div class="collapsible-section collapsed" id="font-settings">
+            <div class="tool-controls">
+                <button class="tool-btn" onclick="setHeadingFont('\'Ma Shan Zheng\', cursive')">毛笔字</button>
+                <button class="tool-btn" onclick="setHeadingFont('\'Zhi Mang Xing\', cursive')">手写体</button>
+                <button class="tool-btn" onclick="setHeadingFont('\'Liu Jian Mao Cao\', cursive')">草书</button>
+                <button class="tool-btn" onclick="setHeadingFont('\'ZCOOL KuaiLe\', sans-serif')">快乐体</button>
+                <button class="tool-btn" onclick="setHeadingFont('\'ZCOOL XiaoWei\', serif')">小微体</button>
+                <button class="tool-btn" onclick="setHeadingFont('\'Noto Serif SC\', serif')">宋体</button>
+                <button class="tool-btn" onclick="setHeadingFont('\'Noto Sans SC\', sans-serif')">黑体</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 内容区域 -->
+    <div class="content-wrapper">
+        <div id="content" class="content-container">
+            <div class="container-unit" id="initial-heading-container">
+                <div class="container-controls">
+                    <button class="delete-container-button" onclick="this.closest('.container-unit').remove()">删除容器</button>
+                    <button class="change-bg-button" onclick="changeContainerBackground(this.closest('.container-unit'))">更改背景</button>
+                </div>
+                <div class="module-container module-unit">
+                    <div class="heading-container">
+                        <div class="heading-30px" contenteditable="true">输入标题</div>
+                    </div>
                     <div class="text-buttons">
                         <button class="background-button" onclick="document.getElementById('background-upload-initial').click()">选择背景图片</button>
-                        <input type="file" accept="image/*" class="hidden" id="background-upload-initial" onchange="setHeadingBackground(this, this.closest('.heading-container').querySelector('.heading-30px'))">
+                        <input type="file" accept="image/*" class="hidden" id="background-upload-initial" onchange="setHeadingBackground(this, this.closest('.module-container').querySelector('.heading-30px'))">
                         <button class="text-button" onclick="selectHeadingText(this)">全选</button>
                         <button class="text-button" onclick="pasteHeadingText(this)">粘贴</button>
                         <button class="clear-button" onclick="clearHeadingText(this)">清空</button>
@@ -430,21 +957,35 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="container-unit" id="initial-content-container">
-            <div class="container-controls">
-                <button class="delete-container-button" onclick="this.closest('.container-unit').remove()">删除容器</button>
-                <button class="change-bg-button" onclick="changeContainerBackground(this.closest('.container-unit'))">更改背景</button>
-            </div>
-            <div class="module-container module-unit" id="initial-module">
-                <div class="add-buttons" id="initial-buttons">
-                    <button class="add-button" onclick="addTextArea('initial-buttons')">T</button>
-                    <button class="add-button" onclick="addImageArea('initial-buttons')">🖼️</button>
-                    <button class="add-button" onclick="addHeading('initial-buttons', '30px')">标30</button>
-                    <button class="add-button" onclick="addHeading('initial-buttons', '20px')">标20</button>
-                    <button class="add-button" onclick="addHeading('initial-buttons', '15px')">标15</button>
-                    <button class="add-button" onclick="addDividerLine('initial-buttons')">添加线</button>
-                    <button class="add-button" onclick="addSpacer('initial-buttons')">间隔</button>
+            <div class="container-unit" id="initial-content-container">
+                <div class="container-controls">
+                    <button class="delete-container-button" onclick="this.closest('.container-unit').remove()">删除容器</button>
+                    <button class="change-bg-button" onclick="changeContainerBackground(this.closest('.container-unit'))">更改背景</button>
+                </div>
+                <div class="module-container module-unit" id="initial-module">
+                    <div class="add-buttons" id="initial-buttons">
+                        <button class="add-button text-btn" onclick="addTextArea('initial-buttons')">
+                            <div class="label">文本</div>
+                        </button>
+                        <button class="add-button image-btn" onclick="addImageArea('initial-buttons')">
+                            <div class="label">图片</div>
+                        </button>
+                        <button class="add-button heading-btn" onclick="addHeading('initial-buttons', '30px')">
+                            <div class="label">标题30</div>
+                        </button>
+                        <button class="add-button heading-btn" onclick="addHeading('initial-buttons', '20px')">
+                            <div class="label">标题20</div>
+                        </button>
+                        <button class="add-button heading-btn" onclick="addHeading('initial-buttons', '15px')">
+                            <div class="label">标题15</div>
+                        </button>
+                        <button class="add-button line-btn" onclick="addDividerLine('initial-buttons')">
+                            <div class="label">分割线</div>
+                        </button>
+                        <button class="add-button spacer-btn" onclick="addSpacer('initial-buttons')">
+                            <div class="label">间隔</div>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -453,11 +994,47 @@
     <script>
         let isHeadingBorderOn = false;
         let isHeadingBlurOn = false;
+        let isBackgroundBlurOn = false;
+        let isHeadingExpandOn = false;
+
+        function setGradientBackground(colorType) {
+            const body = document.body;
+            
+            // 定义不同的紫色渐变背景
+            const gradients = {
+                'white': 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)',
+                'gray1': 'linear-gradient(135deg, #f1f3f4 0%, #dadce0 100%)',
+                'gray2': 'linear-gradient(135deg, #e8eaed 0%, #bdc1c6 100%)',
+                'light-blue': 'linear-gradient(135deg, #e3f2fd 0%, #bbdefb 50%, #90caf9 100%)',
+                'light-yellow': 'linear-gradient(135deg, #fff9c4 0%, #fff59d 50%, #ffee58 100%)'
+            };
+            
+            // 应用新的渐变背景
+            if (gradients[colorType]) {
+                body.style.background = gradients[colorType];
+                console.log(`Applied gradient background: ${colorType}`);
+            }
+        }
+
+        function toggleSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            const arrow = event.currentTarget.querySelector('.dropdown-arrow');
+            
+            if (section.classList.contains('collapsed')) {
+                // 展开
+                section.classList.remove('collapsed');
+                arrow.classList.remove('collapsed');
+            } else {
+                // 收起
+                section.classList.add('collapsed');
+                arrow.classList.add('collapsed');
+            }
+        }
 
         function togglePreviewMode() {
             document.body.classList.toggle('preview-mode');
-            const previewButton = document.querySelector('.preview-button');
-            previewButton.textContent = document.body.classList.contains('preview-mode') ? '退出预览' : '预览模式';
+            const previewText = document.getElementById('preview-text');
+            previewText.textContent = document.body.classList.contains('preview-mode') ? '退出预览' : '预览模式';
             const textAreas = document.querySelectorAll('.text-area');
             textAreas.forEach(ta => {
                 if (document.body.classList.contains('preview-mode')) {
@@ -467,6 +1044,26 @@
                     ta.style.height = '';
                 }
             });
+        }
+
+        function adjustTextOffset(change) {
+            const root = document.documentElement;
+            const currentOffset = parseFloat(getComputedStyle(root).getPropertyValue('--text-area-offset')) || 0;
+            const newOffset = Math.min(Math.max(currentOffset + change, -20), 20); // 限制在-20px到20px之间
+            root.style.setProperty('--text-area-offset', `${newOffset}px`);
+            
+            // 立即应用到所有现有的文本区域
+            const textAreas = document.querySelectorAll('.text-area');
+            textAreas.forEach(textarea => {
+                textarea.style.paddingLeft = `calc(12px + ${newOffset}px)`;
+                // 强制重新渲染
+                textarea.style.display = 'none';
+                textarea.offsetHeight; // 触发重排
+                textarea.style.display = '';
+            });
+            
+            console.log('Text offset changed to:', newOffset + 'px'); // 调试用
+            console.log('Applied to', textAreas.length, 'text areas'); // 调试用
         }
 
         function adjustTextSize(change) {
@@ -488,13 +1085,97 @@
         }
 
         function setHeadingFont(font) {
+            console.log('Setting font to:', font); // 调试用
+            
+            // 更新CSS变量
             document.documentElement.style.setProperty('--heading-30px-font', font);
+            
+            // 使用FontFace API检查字体是否加载完成
+            const fontName = font.split(',')[0].replace(/['"]/g, '');
+            
+            if (document.fonts && document.fonts.check) {
+                if (!document.fonts.check(`16px ${fontName}`)) {
+                    console.log('Font not loaded yet, waiting...');
+                    document.fonts.ready.then(() => {
+                        applyFontToHeadings(font);
+                    });
+                } else {
+                    applyFontToHeadings(font);
+                }
+            } else {
+                // 如果不支持FontFace API，直接应用
+                applyFontToHeadings(font);
+            }
+            
+            // 高亮选中的字体按钮
+            highlightActiveButton(font);
+        }
+        
+        function applyFontToHeadings(font) {
+            // 立即应用到所有现有的标题
+            const allHeadings = document.querySelectorAll('.heading-30px, .heading-20px, .heading-15px');
+            
+            allHeadings.forEach(heading => {
+                heading.style.fontFamily = font + ' !important';
+                // 强制重新渲染
+                heading.style.display = 'none';
+                heading.offsetHeight; // 触发重排
+                heading.style.display = '';
+                console.log('Applied font to heading:', heading.className, font); // 调试用
+            });
+        }
+        
+        function highlightActiveButton(font) {
+            const fontButtons = document.querySelectorAll('.tool-controls .tool-btn');
+            fontButtons.forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // 根据字体名称高亮对应按钮
+            fontButtons.forEach(btn => {
+                const btnText = btn.textContent.trim();
+                let shouldActivate = false;
+                
+                if (font.includes('Ma Shan Zheng') && btnText === '毛笔字') shouldActivate = true;
+                else if (font.includes('Zhi Mang Xing') && btnText === '手写体') shouldActivate = true;
+                else if (font.includes('Liu Jian Mao Cao') && btnText === '草书') shouldActivate = true;
+                else if (font.includes('ZCOOL KuaiLe') && btnText === '快乐体') shouldActivate = true;
+                else if (font.includes('ZCOOL XiaoWei') && btnText === '小微体') shouldActivate = true;
+                else if (font.includes('Noto Serif SC') && btnText === '宋体') shouldActivate = true;
+                else if (font.includes('Noto Sans SC') && btnText === '黑体') shouldActivate = true;
+                
+                if (shouldActivate) {
+                    btn.classList.add('active');
+                }
+            });
         }
 
         function setContainerBackground(color) {
             const containers = document.querySelectorAll('.container-unit:not([data-no-background="true"])');
             containers.forEach(container => {
-                container.style.backgroundColor = color;
+                // 将CSS变量转换为半透明效果
+                let transparentColor;
+                switch(color) {
+                    case 'var(--bg-pale-yellow)':
+                        transparentColor = 'rgba(255, 234, 171, 0.3)';
+                        break;
+                    case 'var(--bg-pale-pink)':
+                        transparentColor = 'rgba(255, 230, 230, 0.3)';
+                        break;
+                    case 'var(--bg-pale-blue)':
+                        transparentColor = 'rgba(230, 243, 255, 0.3)';
+                        break;
+                    case 'var(--bg-pale-green)':
+                        transparentColor = 'rgba(230, 255, 230, 0.3)';
+                        break;
+                    case 'var(--bg-pale-gray)':
+                        transparentColor = 'rgba(240, 240, 240, 0.3)';
+                        break;
+                    default:
+                        transparentColor = 'rgba(255, 234, 171, 0.3)';
+                }
+                container.style.background = transparentColor;
+                container.style.backdropFilter = 'blur(15px)';
             });
         }
 
@@ -511,34 +1192,122 @@
         function toggleHeadingBorder() {
             isHeadingBorderOn = !isHeadingBorderOn;
             const headings = document.querySelectorAll('.heading-30px');
-            const button = document.querySelector('.border-toggle-button');
+            const button = document.getElementById('border-btn');
             headings.forEach(heading => {
                 const currentColor = getComputedStyle(heading).color;
                 heading.style.border = isHeadingBorderOn ? `2px solid ${currentColor}` : 'none';
             });
             button.textContent = isHeadingBorderOn ? '边框关' : '边框开';
+            button.classList.toggle('active', isHeadingBorderOn);
+        }
+
+        function toggleHeadingExpand() {
+            isHeadingExpandOn = !isHeadingExpandOn;
+            const headings = document.querySelectorAll('.heading-30px');
+            const button = document.querySelector('[onclick="toggleHeadingExpand()"]');
+            
+            headings.forEach(heading => {
+                if (isHeadingExpandOn) {
+                    // 加宽：两侧顶满，去掉圆角
+                    heading.style.width = 'calc(100% + 20px)';
+                    heading.style.marginLeft = '-10px';
+                    heading.style.marginRight = '-10px';
+                    heading.style.borderRadius = '0';
+                    // 如果有模糊背景层，也要调整
+                    const blurDiv = heading.querySelector('.heading-30px-blur');
+                    if (blurDiv) {
+                        blurDiv.style.borderRadius = '0';
+                    }
+                } else {
+                    // 恢复正常：恢复原始宽度和圆角
+                    heading.style.width = '100%';
+                    heading.style.marginLeft = '0';
+                    heading.style.marginRight = '0';
+                    heading.style.borderRadius = '10px';
+                    // 如果有模糊背景层，也要恢复
+                    const blurDiv = heading.querySelector('.heading-30px-blur');
+                    if (blurDiv) {
+                        blurDiv.style.borderRadius = '10px';
+                    }
+                }
+            });
+            
+            button.textContent = isHeadingExpandOn ? '标题加宽关' : '标题加宽';
+        }
+
+        function toggleBackgroundBlur() {
+            isBackgroundBlurOn = !isBackgroundBlurOn;
+            const headings = document.querySelectorAll('.heading-30px');
+            const button = document.getElementById('bg-blur-btn');
+            
+            headings.forEach(heading => {
+                const bgImage = heading.style.backgroundImage;
+                if (bgImage && bgImage !== 'none') {
+                    let blurDiv = heading.querySelector('.heading-30px-blur');
+                    
+                    if (isBackgroundBlurOn) {
+                        // 创建或更新模糊背景层
+                        if (!blurDiv) {
+                            blurDiv = document.createElement('div');
+                            blurDiv.className = 'heading-30px-blur';
+                            heading.prepend(blurDiv);
+                        }
+                        blurDiv.style.backgroundImage = bgImage;
+                        blurDiv.style.filter = 'blur(25px)';
+                        blurDiv.style.position = 'absolute';
+                        blurDiv.style.top = '0';
+                        blurDiv.style.left = '0';
+                        blurDiv.style.right = '0';
+                        blurDiv.style.bottom = '0';
+                        blurDiv.style.backgroundSize = 'cover';
+                        blurDiv.style.backgroundPosition = 'center';
+                        blurDiv.style.overflow = 'hidden';
+                        blurDiv.style.zIndex = '-1';
+                        
+                        // 根据加宽状态设置圆角
+                        blurDiv.style.borderRadius = isHeadingExpandOn ? '0' : '10px';
+                        
+                        // 给标题添加半透明背景，类似Mac风格
+                        heading.style.backgroundColor = 'rgba(255, 255, 255, 0.25)';
+                        heading.style.backdropFilter = 'blur(8px)';
+                        heading.style.border = '1px solid rgba(255, 255, 255, 0.3)';
+                        heading.style.overflow = 'hidden'; // 确保不会溢出
+                    } else {
+                        // 移除模糊效果
+                        if (blurDiv) {
+                            blurDiv.remove();
+                        }
+                        heading.style.backgroundColor = '';
+                        heading.style.backdropFilter = '';
+                        heading.style.border = '';
+                        heading.style.overflow = '';
+                    }
+                }
+            });
+            
+            button.textContent = isBackgroundBlurOn ? '图片模糊关' : '图片模糊开';
+            button.classList.toggle('active', isBackgroundBlurOn);
         }
 
         function toggleHeadingBlur() {
             isHeadingBlurOn = !isHeadingBlurOn;
             const headings = document.querySelectorAll('.heading-30px');
-            const button = document.querySelector('.blur-toggle-button');
+            const button = document.getElementById('blur-btn');
+            
             headings.forEach(heading => {
-                const blurDiv = heading.querySelector('.heading-30px-blur');
                 if (isHeadingBlurOn) {
-                    if (!blurDiv && heading.style.backgroundImage) {
-                        const blur = document.createElement('div');
-                        blur.className = 'heading-30px-blur';
-                        blur.style.backgroundImage = heading.style.backgroundImage;
-                        heading.prepend(blur);
-                    }
-                    heading.style.backgroundColor = 'rgba(255, 255, 255, 0.3)';
+                    // 添加正常的黑色半透明阴影
+                    heading.style.textShadow = '0 4px 8px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.2)';
+                    heading.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.2), 0 4px 16px rgba(0, 0, 0, 0.1)';
                 } else {
-                    if (blurDiv) blurDiv.remove();
-                    heading.style.backgroundColor = '';
+                    // 移除阴影
+                    heading.style.textShadow = 'none';
+                    heading.style.boxShadow = 'none';
                 }
             });
+            
             button.textContent = isHeadingBlurOn ? '阴影关' : '阴影开';
+            button.classList.toggle('active', isHeadingBlurOn);
         }
 
         function addContainer() {
@@ -546,7 +1315,8 @@
             const container = document.createElement('div');
             container.className = 'container-unit';
             container.id = 'container-' + Date.now();
-            container.style.backgroundColor = 'var(--bg-pale-yellow)';
+            container.style.background = 'rgba(255, 234, 171, 0.3)';
+            container.style.backdropFilter = 'blur(15px)';
 
             const controlsDiv = document.createElement('div');
             controlsDiv.className = 'container-controls';
@@ -569,19 +1339,19 @@
             buttonContainer.id = buttonId;
 
             const buttons = [
-                { text: 'T', onclick: () => addTextArea(buttonId) },
-                { text: '🖼️', onclick: () => addImageArea(buttonId) },
-                { text: '标30', onclick: () => addHeading(buttonId, '30px') },
-                { text: '标20', onclick: () => addHeading(buttonId, '20px') },
-                { text: '标15', onclick: () => addHeading(buttonId, '15px') },
-                { text: '添加线', onclick: () => addDividerLine(buttonId) },
-                { text: '间隔', onclick: () => addSpacer(buttonId) }
+                { label: '文本', class: 'text-btn', onclick: () => addTextArea(buttonId) },
+                { label: '图片', class: 'image-btn', onclick: () => addImageArea(buttonId) },
+                { label: '标题30', class: 'heading-btn', onclick: () => addHeading(buttonId, '30px') },
+                { label: '标题20', class: 'heading-btn', onclick: () => addHeading(buttonId, '20px') },
+                { label: '标题15', class: 'heading-btn', onclick: () => addHeading(buttonId, '15px') },
+                { label: '分割线', class: 'line-btn', onclick: () => addDividerLine(buttonId) },
+                { label: '间隔', class: 'spacer-btn', onclick: () => addSpacer(buttonId) }
             ];
             
             buttons.forEach(btn => {
                 const button = document.createElement('button');
-                button.className = 'add-button';
-                button.textContent = btn.text;
+                button.className = `add-button ${btn.class}`;
+                button.innerHTML = `<div class="label">${btn.label}</div>`;
                 button.onclick = btn.onclick;
                 buttonContainer.appendChild(button);
             });
@@ -597,7 +1367,8 @@
             const container = document.createElement('div');
             container.className = 'container-unit';
             container.id = 'container-' + Date.now();
-            container.style.backgroundColor = 'transparent';
+            container.style.background = 'transparent';
+            container.style.backdropFilter = 'none';
             container.setAttribute('data-no-background', 'true');
 
             const controlsDiv = document.createElement('div');
@@ -621,19 +1392,19 @@
             buttonContainer.id = buttonId;
 
             const buttons = [
-                { text: 'T', onclick: () => addTextArea(buttonId) },
-                { text: '🖼️', onclick: () => addImageArea(buttonId) },
-                { text: '标30', onclick: () => addHeading(buttonId, '30px') },
-                { text: '标20', onclick: () => addHeading(buttonId, '20px') },
-                { text: '标15', onclick: () => addHeading(buttonId, '15px') },
-                { text: '添加线', onclick: () => addDividerLine(buttonId) },
-                { text: '间隔', onclick: () => addSpacer(buttonId) }
+                { label: '文本', class: 'text-btn', onclick: () => addTextArea(buttonId) },
+                { label: '图片', class: 'image-btn', onclick: () => addImageArea(buttonId) },
+                { label: '标题30', class: 'heading-btn', onclick: () => addHeading(buttonId, '30px') },
+                { label: '标题20', class: 'heading-btn', onclick: () => addHeading(buttonId, '20px') },
+                { label: '标题15', class: 'heading-btn', onclick: () => addHeading(buttonId, '15px') },
+                { label: '分割线', class: 'line-btn', onclick: () => addDividerLine(buttonId) },
+                { label: '间隔', class: 'spacer-btn', onclick: () => addSpacer(buttonId) }
             ];
             
             buttons.forEach(btn => {
                 const button = document.createElement('button');
-                button.className = 'add-button';
-                button.textContent = btn.text;
+                button.className = `add-button ${btn.class}`;
+                button.innerHTML = `<div class="label">${btn.label}</div>`;
                 button.onclick = btn.onclick;
                 buttonContainer.appendChild(button);
             });
@@ -645,15 +1416,29 @@
         }
 
         function changeContainerBackground(container) {
-            const colors = ['var(--bg-pale-yellow)', 'var(--bg-pale-pink)', 'var(--bg-pale-blue)', 'var(--bg-pale-green)', 'var(--bg-pale-gray)', 'transparent'];
-            const currentColor = container.style.backgroundColor || 'var(--bg-pale-yellow)';
-            const currentIndex = colors.indexOf(currentColor);
+            const colors = [
+                { var: 'var(--bg-pale-yellow)', rgba: 'rgba(255, 234, 171, 0.3)' },
+                { var: 'var(--bg-pale-pink)', rgba: 'rgba(255, 230, 230, 0.3)' },
+                { var: 'var(--bg-pale-blue)', rgba: 'rgba(230, 243, 255, 0.3)' },
+                { var: 'var(--bg-pale-green)', rgba: 'rgba(230, 255, 230, 0.3)' },
+                { var: 'var(--bg-pale-gray)', rgba: 'rgba(240, 240, 240, 0.3)' },
+                { var: 'transparent', rgba: 'transparent' }
+            ];
+            
+            const currentBg = container.style.background || 'rgba(255, 234, 171, 0.3)';
+            let currentIndex = colors.findIndex(color => currentBg.includes(color.rgba.split(',')[0]));
+            if (currentIndex === -1) currentIndex = 0;
+            
             const nextIndex = (currentIndex + 1) % colors.length;
-            container.style.backgroundColor = colors[nextIndex];
-            if (colors[nextIndex] === 'transparent') {
+            const nextColor = colors[nextIndex];
+            
+            container.style.background = nextColor.rgba;
+            if (nextColor.rgba === 'transparent') {
                 container.setAttribute('data-no-background', 'true');
+                container.style.backdropFilter = 'none';
             } else {
                 container.removeAttribute('data-no-background');
+                container.style.backdropFilter = 'blur(15px)';
             }
         }
 
@@ -675,7 +1460,6 @@
             }
         }
 
-
         async function shareAllContainers() {
             const isPreviewMode = document.body.classList.contains('preview-mode');
             if (!isPreviewMode) {
@@ -687,19 +1471,15 @@
             
             for (const container of containers) {
                 const clone = container.cloneNode(true);
-                // 移除控制按钮和不需要的元素
                 clone.querySelectorAll('.container-controls, .add-buttons, .text-buttons, .image-area-buttons, .add-image-button, .delete-image-button').forEach(el => el.remove());
                 
-                // 新增：移除图片上传的 <input type="file" accept="image/*" class="hidden">
-                clone.querySelectorAll('input[type="file"][accept="image/*"].hidden').forEach(input => input.remove());
-                
-                // 设置容器背景色
+                // Set container background color
                 const bgColor = container.hasAttribute('data-no-background') && container.getAttribute('data-no-background') === 'true'
                     ? 'transparent'
                     : getComputedStyle(container).backgroundColor;
                 clone.style.backgroundColor = bgColor;
                 
-                // 转换 textareas 为 divs
+                // Convert textareas to divs
                 clone.querySelectorAll('.text-area').forEach(textarea => {
                     const div = document.createElement('div');
                     div.className = 'text-area';
@@ -707,7 +1487,7 @@
                     textarea.replaceWith(div);
                 });
                 
-                // 转换图片为 base64
+                // Convert images to base64
                 const images = clone.querySelectorAll('.inserted-image');
                 for (const img of images) {
                     if (img.src) {
@@ -715,7 +1495,7 @@
                     }
                 }
                 
-                // 处理标题背景和模糊效果
+                // Handle heading backgrounds and blur
                 const headings = clone.querySelectorAll('.heading-30px');
                 for (const heading of headings) {
                     const bgImage = heading.style.backgroundImage;
@@ -735,7 +1515,7 @@
                             }
                         }
                     }
-                    // 应用当前文本颜色、边框和模糊样式
+                    // Apply current text color, border, and blur styles
                     const currentColor = getComputedStyle(document.querySelector('.heading-30px')).color;
                     heading.style.color = currentColor;
                     heading.style.border = isHeadingBorderOn ? `2px solid ${currentColor}` : 'none';
@@ -749,7 +1529,6 @@
                 document.body.classList.remove('preview-mode');
             }
 
-
             const styles = `
                 <style>
                     * {
@@ -760,9 +1539,11 @@
                         margin: 0;
                         padding: 0;
                         width: 100%;
+                        background: ${getComputedStyle(document.body).background || 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'};
+                        min-height: 100vh;
                     }
                     body {
-                        font-family: SimSun, Arial, sans-serif;
+                        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif;
                         max-width: 375px;
                         margin: 10px auto;
                         padding: 0 5px;
@@ -783,7 +1564,8 @@
                         padding: 0;
                         margin-bottom: 10px;
                         position: relative;
-                        border-radius: 10px;
+                        border-radius: 16px;
+                        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
                     }
                     .container-unit[data-no-background="true"] {
                         background-color: transparent;
@@ -803,7 +1585,8 @@
                         height: auto;
                         min-height: auto;
                         resize: none;
-                        padding: 5px;
+                        padding: 5px 12px;
+                        padding-left: calc(12px + ${getComputedStyle(document.documentElement).getPropertyValue('--text-area-offset') || '0px'});
                         overflow: visible;
                         font-size: ${getComputedStyle(document.documentElement).getPropertyValue('--text-area-font-size')};
                         line-height: 1.6;
@@ -822,7 +1605,7 @@
                         text-align: center;
                         border: none;
                         box-sizing: border-box;
-                        font-family: SimSun, Arial, sans-serif;
+                        font-family: ${getComputedStyle(document.documentElement).getPropertyValue('--heading-30px-font')};
                         pointer-events: none;
                         position: relative;
                     }
@@ -833,24 +1616,29 @@
                         background-color: ${isHeadingBlurOn ? 'rgba(255, 255, 255, 0.3)' : 'var(--bg-pale-pink)'};
                         width: 100%;
                         position: relative;
-                        font-family: ${getComputedStyle(document.documentElement).getPropertyValue('--heading-30px-font')};
                         background-size: cover;
                         background-position: center;
                         margin-bottom: -3px;
-                        border-radius: 10px;
+                        border-radius: ${isHeadingExpandOn ? '0' : '10px'};
                         border: ${isHeadingBorderOn ? `2px solid ${getComputedStyle(document.querySelector('.heading-30px')).color}` : 'none'};
+                        text-shadow: ${isHeadingBlurOn ? '0 4px 8px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.2)' : 'none'};
+                        box-shadow: ${isHeadingBlurOn ? '0 8px 32px rgba(0, 0, 0, 0.2), 0 4px 16px rgba(0, 0, 0, 0.1)' : 'none'};
+                        width: ${isHeadingExpandOn ? 'calc(100% + 20px)' : '100%'};
+                        margin-left: ${isHeadingExpandOn ? '-10px' : '0'};
+                        margin-right: ${isHeadingExpandOn ? '-10px' : '0'};
                     }
                     .heading-30px-blur {
                         position: absolute;
-                        top: -10px;
-                        left: -10px;
-                        right: -10px;
-                        bottom: -10px;
+                        top: 0;
+                        left: 0;
+                        right: 0;
+                        bottom: 0;
                         background-size: cover;
                         background-position: center;
-                        filter: blur(13px);
+                        filter: blur(25px);
                         overflow: hidden;
                         z-index: -1;
+                        border-radius: ${isHeadingExpandOn ? '0' : '10px'};
                     }
                     .heading-20px {
                         font-size: 20px;
@@ -874,6 +1662,7 @@
                     }
                     .image-grid.single {
                         display: block;
+                        padding: 5px;
                     }
                     .image-grid.two {
                         display: flex;
@@ -884,10 +1673,13 @@
                         column-count: 2;
                         column-gap: 2px;
                         column-width: calc((100% - 2px) / 2);
+                        padding: 5px;
                     }
                     .image-container {
                         width: 100%;
                         margin-bottom: 2px;
+                        border-radius: 8px;
+                        overflow: hidden;
                     }
                     .image-grid.two .image-container {
                         flex: 1;
@@ -896,7 +1688,7 @@
                         width: 100%;
                         height: auto;
                         display: block;
-                        border-radius: 5px;
+                        border-radius: 8px;
                     }
                     .divider-line {
                         width: calc(100% - 10px);
@@ -926,10 +1718,10 @@
                     </div>
                 </body>
                 </html>
-            `;        
+            `;
 
             const blob = new Blob([htmlContent], { type: 'text/html' });
-            const file = new File([blob], `article-${Date.now()}.html`, { type: 'text/html' });        
+            const file = new File([blob], `article-${Date.now()}.html`, { type: 'text/html' });
 
             if (navigator.share) {
                 navigator.share({
@@ -966,19 +1758,19 @@
             newButtonContainer.id = newButtonId;
             
             const buttons = [
-                { text: 'T', onclick: () => addTextArea(newButtonId) },
-                { text: '🖼️', onclick: () => addImageArea(newButtonId) },
-                { text: '标30', onclick: () => addHeading(newButtonId, '30px') },
-                { text: '标20', onclick: () => addHeading(newButtonId, '20px') },
-                { text: '标15', onclick: () => addHeading(newButtonId, '15px') },
-                { text: '添加线', onclick: () => addDividerLine(newButtonId) },
-                { text: '间隔', onclick: () => addSpacer(newButtonId) }
+                { label: '文本', class: 'text-btn', onclick: () => addTextArea(newButtonId) },
+                { label: '图片', class: 'image-btn', onclick: () => addImageArea(newButtonId) },
+                { label: '标题30', class: 'heading-btn', onclick: () => addHeading(newButtonId, '30px') },
+                { label: '标题20', class: 'heading-btn', onclick: () => addHeading(newButtonId, '20px') },
+                { label: '标题15', class: 'heading-btn', onclick: () => addHeading(newButtonId, '15px') },
+                { label: '分割线', class: 'line-btn', onclick: () => addDividerLine(newButtonId) },
+                { label: '间隔', class: 'spacer-btn', onclick: () => addSpacer(newButtonId) }
             ];
             
             buttons.forEach(btn => {
                 const button = document.createElement('button');
-                button.className = 'add-button';
-                button.textContent = btn.text;
+                button.className = `add-button ${btn.class}`;
+                button.innerHTML = `<div class="label">${btn.label}</div>`;
                 button.onclick = btn.onclick;
                 newButtonContainer.appendChild(button);
             });
@@ -999,6 +1791,11 @@
             const textArea = document.createElement('textarea');
             textArea.className = 'text-area';
             textArea.placeholder = '在此输入文本';
+            
+            // 应用当前的偏移值
+            const currentOffset = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--text-area-offset')) || 0;
+            textArea.style.paddingLeft = `calc(12px + ${currentOffset}px)`;
+            
             textArea.oninput = () => {
                 if (document.body.classList.contains('preview-mode')) {
                     textArea.style.height = 'auto';
@@ -1070,6 +1867,20 @@
             heading.className = `heading-${size}`;
             heading.contentEditable = true;
             heading.textContent = '输入标题';
+            
+            // 应用当前选择的字体
+            const currentFont = getComputedStyle(document.documentElement).getPropertyValue('--heading-30px-font').trim() || "'Noto Serif SC', serif";
+            heading.style.fontFamily = currentFont;
+            
+            // 应用当前的加宽状态（仅对30px标题）
+            if (size === '30px' && isHeadingExpandOn) {
+                heading.style.width = 'calc(100% + 20px)';
+                heading.style.marginLeft = '-10px';
+                heading.style.marginRight = '-10px';
+                heading.style.borderRadius = '0';
+            }
+            
+            console.log('New heading font:', currentFont); // 调试用
             
             const buttonDiv = document.createElement('div');
             buttonDiv.className = 'text-buttons';
@@ -1144,17 +1955,38 @@
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     heading.style.backgroundImage = `url(${e.target.result})`;
-                    if (isHeadingBlurOn) {
-                        const blurDiv = heading.querySelector('.heading-30px-blur');
-                        if (blurDiv) {
-                            blurDiv.style.backgroundImage = `url(${e.target.result})`;
-                        } else {
-                            const newBlurDiv = document.createElement('div');
-                            newBlurDiv.className = 'heading-30px-blur';
-                            newBlurDiv.style.backgroundImage = `url(${e.target.result})`;
-                            heading.prepend(newBlurDiv);
+                    
+                    // 如果背景模糊开关是开启的，自动应用模糊效果
+                    if (isBackgroundBlurOn) {
+                        let blurOverlay = heading.querySelector('.heading-blur-overlay');
+                        if (!blurOverlay) {
+                            blurOverlay = document.createElement('div');
+                            blurOverlay.className = 'heading-blur-overlay';
+                            heading.appendChild(blurOverlay);
                         }
-                        heading.style.backgroundColor = 'rgba(255, 255, 255, 0.3)';
+                        
+                        // 设置新的模糊覆盖层
+                        blurOverlay.style.position = 'absolute';
+                        blurOverlay.style.top = '0';
+                        blurOverlay.style.left = '0';
+                        blurOverlay.style.right = '0';
+                        blurOverlay.style.bottom = '0';
+                        blurOverlay.style.width = '100%';
+                        blurOverlay.style.height = '100%';
+                        blurOverlay.style.backgroundImage = `url(${e.target.result})`;
+                        blurOverlay.style.backgroundSize = 'cover';
+                        blurOverlay.style.backgroundPosition = 'center';
+                        blurOverlay.style.filter = 'blur(8px)';
+                        blurOverlay.style.zIndex = '0';
+                        blurOverlay.style.borderRadius = isHeadingExpandOn ? '0' : '10px';
+                        blurOverlay.style.overflow = 'hidden';
+                        
+                        // 设置标题容器
+                        heading.style.position = 'relative';
+                        heading.style.overflow = 'hidden';
+                        heading.style.zIndex = '1';
+                        heading.style.color = 'white';
+                        heading.style.textShadow = '0 2px 4px rgba(0, 0, 0, 0.8), 0 1px 2px rgba(0, 0, 0, 0.6)';
                     }
                 };
                 reader.readAsDataURL(input.files[0]);
@@ -1162,7 +1994,7 @@
         }
 
         function selectHeadingText(button) {
-            const heading = button.closest('.heading-container').querySelector('[contenteditable]');
+            const heading = button.closest('.module-container').querySelector('[contenteditable]');
             const range = document.createRange();
             range.selectNodeContents(heading);
             const selection = window.getSelection();
@@ -1171,7 +2003,7 @@
         }
 
         function pasteHeadingText(button) {
-            const heading = button.closest('.heading-container').querySelector('[contenteditable]');
+            const heading = button.closest('.module-container').querySelector('[contenteditable]');
             navigator.clipboard.readText().then(text => {
                 heading.textContent = text;
             }).catch(err => {
@@ -1180,7 +2012,7 @@
         }
 
         function clearHeadingText(button) {
-            const heading = button.closest('.heading-container').querySelector('[contenteditable]');
+            const heading = button.closest('.module-container').querySelector('[contenteditable]');
             heading.textContent = '';
         }
 
